@@ -13,6 +13,7 @@ app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', '') or DB_URL
 # Use flask_pymongo to set up mongo connection
 app.config["MONGO_URI"] =  os.environ.get('DATABASE_URL', '') or "mongodb://heroku_fwqfx20b:ikt9hmsrccm7c3dvcqnpebc031@ds113063.mlab.com:13063/heroku_fwqfx20b"
+
 mongo = PyMongo(app)
 
 # Or set inline
