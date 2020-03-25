@@ -1,18 +1,22 @@
 from flask_pymongo import PyMongo
 import os
 import json
+import holiday_scraper
 from flask import (
     Flask,
     render_template,
     jsonify,
     request,
     redirect)
+import datetime
+year = datetime.date.today().year
+
 
 app = Flask(__name__)
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', '') or DB_URL
 # Use flask_pymongo to set up mongo connection
-app.config["MONGO_URI"] =  os.environ.get('DATABASE_URL', '') or "mongodb://heroku_fwqfx20b:ikt9hmsrccm7c3dvcqnpebc031@ds113063.mlab.com:13063/heroku_fwqfx20b"
+app.config["MONGO_URI"] =  os.environ.get('DATABASE_URL', '') or "mongodb://heroku_fwqfx20b:ikt9hmsrccm7c3dvcqnpebc031@ds113063.mlab.com:13063/heroku_fwqfx20b?retryWrites=false"
 
 mongo = PyMongo(app)
 
@@ -22,10 +26,34 @@ mongo = PyMongo(app)
 
 @app.route("/")
 def index():
-    news = mongo.db.countries.find_one()
+    country = mongo.db.countries.find_one()
+    holiday = mongo.db.holidays.find_one()
 
-    return render_template("index.html", news=news)
+    return render_template("index.html", country=country, holiday=holiday)
 
+@app.route("/scrapejsonData")
+def scrapejsonData():
+    holiday = mongo.db.holidays
+    holiday_data = holiday_scraper.scrape_holidays()
+    # holiday.insert_one(holiday_data)
+    holiday.update({}, holiday_data, upsert=True)
+
+    # return jsonify(holiday_data)
+
+@app.route("/holidayData", methods=['GET'])
+def holidayData():
+    holiday = mongo.db.holidays
+    ho = [{str(year): result[str(year)]} for result in holiday.find()]
+    
+    return jsonify(ho)
+
+@app.route("/countryData", methods=['GET'])
+def countryData():
+    country = mongo.db.countries
+    co = [{"Countries": result["Countries"]} for result in country.find()]
+    
+    return jsonify(co)
+    
 
 
 if __name__ == "__main__":
