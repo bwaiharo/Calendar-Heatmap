@@ -53,6 +53,13 @@ def countryData():
     co = [{"Countries": result["Countries"]} for result in country.find()]
     
     return jsonify(co)
+
+@app.route("/calendarData", methods=['GET'])
+def calendarData():
+    holiday = mongo.db.holidays
+    ca = [{"Date": result[str(year)]} for result in holiday.find()]
+    
+    return jsonify(ca)
     
 
 
