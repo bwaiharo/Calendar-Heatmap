@@ -26,10 +26,7 @@ mongo = PyMongo(app)
 
 @app.route("/")
 def index():
-    country = mongo.db.countries.find_one()
-    holiday = mongo.db.holidays.find_one()
-
-    return render_template("index.html", country=country, holiday=holiday)
+     return render_template("index.html")
 
 @app.route("/scrapejsonData")
 def scrapejsonData():
@@ -39,11 +36,12 @@ def scrapejsonData():
     holiday.update({}, holiday_data, upsert=True)
 
     # return jsonify(holiday_data)
-
+@app.route('/holidayData/<country>')
 @app.route("/holidayData", methods=['GET'])
-def holidayData():
+def holidayData(country):
     holiday = mongo.db.holidays
-    ho = [{str(year): result[str(year)]} for result in holiday.find()]
+    ho = [{str(year): result[country]} for result in holiday.find()]
+    # ho = [result for result in holiday.find()]
     
     return jsonify(ho)
 
@@ -52,12 +50,14 @@ def countryData():
     country = mongo.db.countries
     co = [{"Countries": result["Countries"]} for result in country.find()]
     
+    
     return jsonify(co)
 
 @app.route("/calendarData", methods=['GET'])
 def calendarData():
     holiday = mongo.db.holidays
-    ca = [{"Date": result[str(year)]} for result in holiday.find()]
+    # ca = [{"Date": result[str(year)]} for result in holiday.find()]
+    ca = [result for result in holiday.find()]
     
     return jsonify(ca)
     

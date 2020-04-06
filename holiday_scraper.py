@@ -45,30 +45,26 @@ def scrape_holidays():
     # @NOTE: Replace the path with your actual path to the chromedriver
     executable_path = {"executable_path": "chromedriver.exe"}
     browser = Browser("chrome", **executable_path, headless=True)
-    holi_list = list()
+    # holi_list = list()
     holi = dict()
     for ct in countries:
         sleep(randint(10,100))
-        
- 
-        
+        # Let's get the JSON for 100 posts sequentially.
         url = f'https://www.timeanddate.com/holidays/{ct}'
-
         tables = pd.read_html(url)
         
         df = tables[0]
         cols = len(df.columns)
         if (cols == 4):
             df.columns = ['Date','Day', 'Name', 'Type']
+            df['Year']= str(year)
             df['Country']= ct
             df = df.dropna()
         else:
             df.columns = ['Date','Day', 'Name', 'Type','Details']
+            df['Year']= str(year)
             df['Country']= ct
             df = df.dropna()
-
-        holi_dict = {ct : df.to_dict(orient='records')}
-        holi_list.append(holi_dict)
-        print(holi_list)
-    holi[str(year)] = holi_list
+    #     holi_list.append(df.to_dict(orient='records'))
+        holi[str(ct)] = df.to_dict(orient='records')
     return holi

@@ -9,28 +9,22 @@ var cntryArray = [];
   });
 
 
-
+console.log(cntryArray)
 var dateRep;
-  var h_url = "/holidayData";
+  var h_url = "/holidayData/austria";
   d3.json(h_url, function(response) {
-//   d3.json(h_url).then(function(response) { 
-      // console.log(response[0]["2020"][0]['afghanistan'][0]['Date'])
-      dateRep = response[0]["2020"];
-      // for(let i = 0; i < cntryArray.length; i++){
-            // console.log(cntryArray[i])
-            dateRep.forEach(e=>{
-          
-              console.log(e.kenya)
-            
-            });
-     
 
+      dateRep = response[0]["2020"];
+      for(let i = 0; i < dateRep.length; i++){
+      console.log(dateRep[i]['Date']);
+      }
+     
     });
 
-
+    // var isoDate = new Date('april12020').toISOString(); 
       var cal = new CalHeatMap();
       cal.init({itemSelector: "#cal-heatmap",
-                data: {946705035: 25},
+                data: {"1585709627125" : 12},
                 domain: "month",
                 cellSize: 20,
                 subDomainTextFormat: "%d",
@@ -42,14 +36,15 @@ var dateRep;
                     (nb === null ? "unknown" : nb) + "</b> items"
                   );
                 }});
-              
+ 
 
     
+// console.log(isoDate);
 
-
-
+var d = new Date();
+var seconds = Math.round(d.getTime() / 1000);
   
-
+console.log(seconds);
 
 
       
